@@ -1,0 +1,13 @@
+# Kompajlirani fajlovi (Eclipse ih pravi automatski)
+bin/
+*.class
+
+# Eclipse podesavanja radnog prostora (licna, ne deo projekta)
+.metadata/
+
+# Lokalna podesavanja baze (svako ima svoja)
+db.local.properties
+
+# Sistemski fajlovi
+Thumbs.db
+.DS_Store
