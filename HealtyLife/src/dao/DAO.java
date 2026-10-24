@@ -15,6 +15,7 @@ import model.Korisnik;
 import model.Nutricionista;
 import model.Proizvod;
 import model.RacunDTO;
+import model.Statistika;
 import model.ZahtevZaSaradnju;
 
 /**
@@ -481,6 +482,16 @@ public class DAO {
 		Double suma = jedan("SELECT COALESCE(SUM(provizija), 0) AS provizija FROM racuni WHERE status = 'placen'",
 				rs -> rs.getDouble("provizija"));
 		return suma != null ? suma : 0;
+	}
+
+	/** Brojke za kontrolnu tablu administratora - jedan upit umesto pet. */
+	public Statistika vratiStatistiku() throws SQLException {
+		return jedan("SELECT (SELECT COUNT(*) FROM korisnici) AS k, "
+				+ "(SELECT COUNT(*) FROM nutricionisti) AS n, "
+				+ "(SELECT COUNT(*) FROM proizvodi) AS p, "
+				+ "(SELECT COUNT(*) FROM zahtevi_za_saradnju WHERE status = 'poslat') AS z, "
+				+ "(SELECT COALESCE(SUM(provizija), 0) FROM racuni WHERE status = 'placen') AS pr",
+				rs -> new Statistika(rs.getInt("k"), rs.getInt("n"), rs.getInt("p"), rs.getInt("z"), rs.getDouble("pr")));
 	}
 
 	/** Oznacava racun kao placen i zahtev kao zavrsen, u jednoj transakciji. */
