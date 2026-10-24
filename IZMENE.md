@@ -9,18 +9,22 @@
 
 Obe verzije rade sa **istom bazom** (`healthylifebaza1`) i ne smetaju jedna drugoj.
 
-### Prelazak između verzija
+### Gde je koja verzija na disku
 
-U terminalu, u folderu projekta:
+Svaka verzija ima svoj folder, pa nije potrebno prebacivati se između grana:
 
-```
-git checkout main            # originalna verzija
-git checkout unapredjenje    # unapređena verzija
-```
+| Folder | Verzija |
+|---|---|
+| `softversko inzenjerstvo\HealthyLifeApp` | unapređena (`unapredjenje`) |
+| `softversko inzenjerstvo\HealthyLifeApp-original` | originalna (`v1-original`) |
 
-U Eclipse-u posle toga: desni klik na projekat → **Refresh** (F5), pa pokreni `view.GUI` kao i do sada.
+U Eclipse-u: **File → Switch Workspace → Other...** i izaberi folder verzije koju želiš da pokreneš.
+Pokreće se isto kao i do sada (`view.GUI`).
 
-> Pre prelaska sačuvaj izmene u Eclipse-u. Ako si nešto menjao, a nisi commit-ovao, Git će te upozoriti.
+> Ne koristi `git checkout main` u folderu `HealthyLifeApp`: originalna verzija u Git-u čuva i
+> Eclipse podešavanja (`.metadata`), pa bi prebacivanje tamo-vamo prepisivalo podešavanja radnog
+> prostora. Zato postoji poseban folder za originalnu verziju (napravljen sa `git worktree`).
+> Ako ti originalni folder više ne treba: `git worktree remove ../HealthyLifeApp-original`
 
 ### Pregled izmena
 
