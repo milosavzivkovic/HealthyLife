@@ -1,5 +1,24 @@
 # HealthyLife – unapređenje aplikacije
 
+## API verzija (grana `api-verzija`, folder `HealthyLifeApp-api`)
+
+Eksperimentalna verzija u kojoj se **podaci o proizvodima uzimaju sa Open Food Facts**
+(besplatna javna baza proizvoda, openfoodfacts.org), a ne iz naše baze.
+
+- **Pretraga po bar-kodu ili nazivu** (npr. „plazma"), uz opciju „samo proizvodi iz Srbije"
+- prikaz: slika, nutritivne vrednosti, sastojci, **alergeni**, **Nutri-Score (A–E)**, **NOVA** (stepen obrade)
+- posno (vegansko) i halal kada postoji podatak; inače piše „nepoznato"
+- **radi bez prijave** („Pretraži proizvode" na početnoj) – tada nije potreban ni XAMPP
+- prijava/registracija i dalje koriste našu bazu (tabela `korisnici`)
+- za sada **nema** administratora ni nutricionista (ostali su u granama `unapredjenje` i `main`)
+- potreban je internet; pretraga ide u pozadini, pa se prozor ne zamrzava
+
+Kod: `src/api/OpenFoodFacts.java` (pozivi API-ja), `src/api/Json.java` (čitanje odgovora),
+`src/view/KorisnikPanel.java` (ekran pretrage). Nisu potrebne dodatne biblioteke.
+
+U Eclipse-u: **File → Switch Workspace → Other...** → folder `HealthyLifeApp-api`, pa
+**File → Import → Existing Projects into Workspace** → izaberi isti folder (samo prvi put).
+
 ## Verzije
 
 | Verzija | Gde je | Opis |

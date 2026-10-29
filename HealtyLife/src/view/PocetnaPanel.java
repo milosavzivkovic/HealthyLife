@@ -16,9 +16,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
@@ -64,16 +62,12 @@ class PocetnaPanel extends JPanel {
 		logo.setFont(Tema.font(Font.BOLD, 22));
 		logo.setForeground(Tema.PRIMARNA_TAMNA);
 
-		Dugme admin = Dugme.link("Administrator");
-		admin.setForeground(Tema.TEKST_SPOREDNI);
-		admin.addActionListener(e -> app.prikaziPrijavu(GUI.PRIJAVA_ADMIN));
 
 		Dugme prijava = Dugme.primarno("Prijavi se");
-		prijava.addActionListener(e -> meniPrijave(prijava));
+		prijava.addActionListener(e -> app.prikaziPrijavu(GUI.PRIJAVA_KORISNIK));
 
 		JPanel desno = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
 		desno.setOpaque(false);
-		desno.add(admin);
 		desno.add(prijava);
 
 		traka.add(logo, BorderLayout.WEST);
@@ -81,21 +75,6 @@ class PocetnaPanel extends JPanel {
 		return traka;
 	}
 
-	private void meniPrijave(Component ispod) {
-		JPopupMenu meni = new JPopupMenu();
-		meni.setBorder(BorderFactory.createLineBorder(Tema.IVICA));
-		meni.add(stavka("Korisnik", "Pretraga proizvoda i saveti nutricionista", GUI.PRIJAVA_KORISNIK));
-		meni.add(stavka("Nutricionista", "Odgovaranje korisnicima i ocene proizvoda", GUI.PRIJAVA_NUTRICIONISTA));
-		meni.show(ispod, ispod.getWidth() - meni.getPreferredSize().width, ispod.getHeight() + 4);
-	}
-
-	private JMenuItem stavka(String naslov, String opis, String ekran) {
-		JMenuItem s = new JMenuItem("<html><b>" + naslov + "</b><br><span style='color:#64748b'>" + opis + "</span></html>");
-		s.setFont(Tema.font(Font.PLAIN, 13));
-		s.setBorder(new EmptyBorder(8, 12, 8, 16));
-		s.addActionListener(e -> app.prikaziPrijavu(ekran));
-		return s;
-	}
 
 	private JPanel uvod() {
 		JPanel uvod = new Tema.GradijentPanel(new GridBagLayout());
@@ -115,21 +94,21 @@ class PocetnaPanel extends JPanel {
 		naslov.setForeground(Color.WHITE);
 		naslov.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JLabel pod = new JLabel("Sastav, nutritivne vrednosti i saveti stručnjaka za svaki proizvod.");
+		JLabel pod = new JLabel("Sastav, nutritivne vrednosti i alergeni za milione proizvoda - preko Open Food Facts.");
 		pod.setFont(Tema.font(Font.PLAIN, 19));
 		pod.setForeground(new Color(220, 252, 231));
 		pod.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		Dugme pocni = Dugme.sekundarno("Prijavi se kao korisnik");
+		Dugme pocni = Dugme.sekundarno("Pretraži proizvode");
 		pocni.setFont(Tema.font(Font.BOLD, 15));
 		pocni.setForeground(Tema.PRIMARNA_TAMNA);
 		pocni.setBorder(new EmptyBorder(12, 26, 12, 26));
-		pocni.addActionListener(e -> app.prikaziPrijavu(GUI.PRIJAVA_KORISNIK));
+		pocni.addActionListener(e -> app.nastaviKaoGost());
 
-		Dugme registracija = Dugme.naZaglavlju("Napravi nalog");
+		Dugme registracija = Dugme.naZaglavlju("Prijavi se");
 		registracija.setFont(Tema.font(Font.BOLD, 15));
 		registracija.setBorder(new EmptyBorder(12, 26, 12, 26));
-		registracija.addActionListener(e -> app.prikaziPrijavu(GUI.REGISTRACIJA_KORISNIK));
+		registracija.addActionListener(e -> app.prikaziPrijavu(GUI.PRIJAVA_KORISNIK));
 
 		JPanel dugmad = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
 		dugmad.setOpaque(false);
@@ -151,9 +130,9 @@ class PocetnaPanel extends JPanel {
 		JPanel sekcija = sekcija("Kako Healthy Life funkcioniše?", Tema.POVRSINA);
 		JPanel kartice = new JPanel(new GridLayout(1, 3, 24, 0));
 		kartice.setOpaque(false);
-		kartice.add(korak(1, "Unesi bar-kod", "Ukucaj bar-kod sa pakovanja proizvoda i pokreni pretragu."));
-		kartice.add(korak(2, "Proveri sastav", "Vidi sastojke, nutritivne vrednosti i da li je proizvod posan ili halal."));
-		kartice.add(korak(3, "Donesi odluku", "Pročitaj ocene nutricionista i odluči da li proizvod odgovara tvojoj ishrani."));
+		kartice.add(korak(1, "Unesi bar-kod ili naziv", "Ukucaj bar-kod sa pakovanja ili naziv proizvoda (npr. \"plazma\")."));
+		kartice.add(korak(2, "Proveri sastav", "Vidi sastojke, nutritivne vrednosti, alergene i da li je proizvod posan."));
+		kartice.add(korak(3, "Donesi odluku", "Nutri-Score ocena (A-E) i upozorenja na alergene pomažu da izabereš zdravije."));
 		sekcija.add(kartice, BorderLayout.CENTER);
 		return sekcija;
 	}
@@ -164,7 +143,7 @@ class PocetnaPanel extends JPanel {
 		kartice.setOpaque(false);
 		kartice.add(prednost("Zdravija ishrana", "Bolje odluke uz detaljne informacije o svakom proizvodu."));
 		kartice.add(prednost("Brzo i jednostavno", "Sve informacije za nekoliko sekundi - samo unesi bar-kod."));
-		kartice.add(prednost("Saveti stručnjaka", "Pošalji pitanje nutricionisti ili zatraži personalizovan plan ishrane."));
+		kartice.add(prednost("Milioni proizvoda", "Podaci iz Open Food Facts - besplatne javne baze proizvoda iz celog sveta."));
 		sekcija.add(kartice, BorderLayout.CENTER);
 		return sekcija;
 	}

@@ -20,15 +20,11 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.JTextComponent;
 
-import controller.AdminKontroler;
 import controller.KorisnikKontroler;
-import controller.NutricionistaKontroler;
-import model.Administrator;
 import model.Korisnik;
-import model.Nutricionista;
 
 /**
- * Ekrani za prijavu i registraciju.
+ * Ekrani za prijavu i registraciju korisnika.
  * Ranije je svaki od pet ekrana bio posebno napisan (~80 linija, skoro isti kod);
  * sada ih sve pravi jedna metoda ekran(...).
  */
@@ -69,11 +65,8 @@ class PrijavaPaneli {
 	}
 
 	void dodajEkrane(JPanel sadrzaj) {
-		sadrzaj.add(prijavaAdmina(), GUI.PRIJAVA_ADMIN);
 		sadrzaj.add(prijavaKorisnika(), GUI.PRIJAVA_KORISNIK);
 		sadrzaj.add(registracijaKorisnika(), GUI.REGISTRACIJA_KORISNIK);
-		sadrzaj.add(prijavaNutricioniste(), GUI.PRIJAVA_NUTRICIONISTA);
-		sadrzaj.add(registracijaNutricioniste(), GUI.REGISTRACIJA_NUTRICIONISTA);
 	}
 
 	void resetuj(String ekran) {
@@ -88,38 +81,6 @@ class PrijavaPaneli {
 
 	private static String lozinka(JPasswordField p) {
 		return new String(p.getPassword());
-	}
-
-	// ═══════════════════════════════════════════════════════════
-	// ADMINISTRATOR
-	// ═══════════════════════════════════════════════════════════
-
-	private JPanel prijavaAdmina() {
-		Forma f = new Forma();
-		JTextField email = f.dodaj(Tema.polje("admin@primer.com"));
-		JPasswordField loz = f.dodaj(Tema.poljeLozinke("Lozinka"));
-
-		Dugme prijavi = Dugme.primarno("Prijavi se");
-		prijavi.addActionListener(e -> {
-			String em = email.getText().trim();
-			String lo = lozinka(loz);
-			if (!AdminKontroler.validacijaAdmina(em, lo)) {
-				f.greska("Unesite email i lozinku.");
-				return;
-			}
-			Administrator a = app.izBaze(prijavi, "Greška pri prijavi", () -> app.dao.nadjiAdministratora(em, lo));
-			if (a == null) return;
-			if (a.getIdAdministratora() == 0) {
-				f.greska("Pogrešan email ili lozinka.");
-				loz.setText("");
-				return;
-			}
-			app.prijavljenAdministrator(a);
-		});
-
-		forme.put(GUI.PRIJAVA_ADMIN, f);
-		return ekran("Administrator", "Pristup administratorskom panelu", f,
-				new String[] { "E-mail", "Lozinka" }, prijavi, nazad());
 	}
 
 	// ═══════════════════════════════════════════════════════════
@@ -188,76 +149,6 @@ class PrijavaPaneli {
 		return ekran("Registracija korisnika", "Napravite besplatan nalog", f,
 				new String[] { "Ime", "Prezime", "E-mail", "Lozinka" }, registruj,
 				link("Već imate nalog? Prijavite se →", GUI.PRIJAVA_KORISNIK), nazad());
-	}
-
-	// ═══════════════════════════════════════════════════════════
-	// NUTRICIONISTA
-	// ═══════════════════════════════════════════════════════════
-
-	private JPanel prijavaNutricioniste() {
-		Forma f = new Forma();
-		JTextField email = f.dodaj(Tema.polje("ime@primer.com"));
-		JPasswordField loz = f.dodaj(Tema.poljeLozinke("Lozinka"));
-
-		Dugme prijavi = Dugme.primarno("Prijavi se");
-		prijavi.addActionListener(e -> {
-			String em = email.getText().trim();
-			String lo = lozinka(loz);
-			if (!NutricionistaKontroler.validacijaNutricioniste(em, lo)) {
-				f.greska("Unesite email i lozinku.");
-				return;
-			}
-			Nutricionista n = app.izBaze(prijavi, "Greška pri prijavi", () -> app.dao.nadjiNutricionistu(em, lo));
-			if (n == null) return;
-			if (n.getIdNutricioniste() == 0) {
-				f.greska("Pogrešan email ili lozinka.");
-				loz.setText("");
-				return;
-			}
-			app.prijavljenNutricionista(n);
-		});
-
-		forme.put(GUI.PRIJAVA_NUTRICIONISTA, f);
-		return ekran("Prijava nutricioniste", "Vaši klijenti vas čekaju", f,
-				new String[] { "E-mail", "Lozinka" }, prijavi,
-				link("Nemate nalog? Registrujte se →", GUI.REGISTRACIJA_NUTRICIONISTA), nazad());
-	}
-
-	private JPanel registracijaNutricioniste() {
-		Forma f = new Forma();
-		JTextField ime = f.dodaj(Tema.polje("Ana"));
-		JTextField prezime = f.dodaj(Tema.polje("Anić"));
-		JTextField licenca = f.dodaj(Tema.polje("Broj licence"));
-		JTextField email = f.dodaj(Tema.polje("ime@primer.com"));
-		JPasswordField loz = f.dodaj(Tema.poljeLozinke("Najmanje 6 karaktera"));
-
-		Dugme registruj = Dugme.primarno("Napravi nalog");
-		registruj.addActionListener(e -> {
-			String i = ime.getText().trim();
-			String p = prezime.getText().trim();
-			String li = licenca.getText().trim();
-			String em = email.getText().trim();
-			String lo = lozinka(loz);
-			if (!NutricionistaKontroler.validirajPodatke(i, p, li, em, lo)) {
-				f.greska(PORUKA_NEISPRAVNI_PODACI);
-				return;
-			}
-			Boolean postoji = app.izBaze(registruj, "Greška pri registraciji", () -> app.dao.proveriPostojecegNutricionistu(em));
-			if (postoji == null) return;
-			if (postoji) {
-				f.greska("Nutricionista sa emailom " + em + " već postoji.");
-				return;
-			}
-			Integer id = app.izBaze(registruj, "Greška pri registraciji", () -> app.dao.dodajNutricionistu(i, p, li, em, lo));
-			if (id == null) return;
-			app.info(registruj, "Uspešno ste se registrovali!");
-			app.prijavljenNutricionista(new Nutricionista(id, i, p, li, em, lo));
-		});
-
-		forme.put(GUI.REGISTRACIJA_NUTRICIONISTA, f);
-		return ekran("Registracija nutricioniste", "Pridružite se kao stručnjak", f,
-				new String[] { "Ime", "Prezime", "Licenca", "E-mail", "Lozinka" }, registruj,
-				link("Već imate nalog? Prijavite se →", GUI.PRIJAVA_NUTRICIONISTA), nazad());
 	}
 
 	private static final String PORUKA_NEISPRAVNI_PODACI =
