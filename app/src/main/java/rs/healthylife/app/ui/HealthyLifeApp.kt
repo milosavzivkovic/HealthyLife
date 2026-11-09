@@ -2,9 +2,15 @@ package rs.healthylife.app.ui
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +34,7 @@ import rs.healthylife.app.ui.ekrani.ProizvodEkran
 import rs.healthylife.app.ui.ekrani.RezultatiEkran
 import rs.healthylife.app.ui.ekrani.jeBarKod
 import rs.healthylife.app.ui.komponente.DonjiMeni
+import rs.healthylife.app.ui.theme.Boje
 
 /** Nazivi ekrana za navigaciju. */
 private object Ekran {
@@ -130,6 +137,13 @@ fun HealthyLifeApp(vm: HealthyLifeViewModel = viewModel()) {
                     )
                 }
             }
+            // Pozadina ispod statusne trake (sat, baterija), da se tekst ne preklapa pri skrolovanju
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .windowInsetsTopHeight(WindowInsets.statusBars)
+                    .background(Boje.Pozadina.copy(alpha = 0.94f))
+            )
         }
     }
 }
@@ -157,7 +171,8 @@ private fun skenirajBarKod(context: Context, onBarKod: (String) -> Unit) {
             // Korisnik je zatvorio skener - nije greska
             if (e is MlKitException && e.errorCode == MlKitException.CODE_SCANNER_CANCELLED) return@addOnFailureListener
             val poruka = if (e is MlKitException && e.errorCode == MlKitException.UNAVAILABLE) {
-                "Skener se još preuzima uz Google Play usluge. Pokušaj ponovo za nekoliko trenutaka."
+                "Skener se još preuzima uz Google Play usluge (potreban je internet i Google nalog na telefonu). " +
+                    "Do tada možeš da ukucaš bar-kod u polje za pretragu."
             } else {
                 "Skeniranje nije uspelo: ${e.localizedMessage}"
             }

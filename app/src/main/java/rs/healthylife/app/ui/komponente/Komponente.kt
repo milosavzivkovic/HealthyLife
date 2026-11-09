@@ -304,10 +304,13 @@ fun Poruka(naslov: String, opis: String, dugme: String? = null, onDugme: () -> U
 /** Donji meni: Pocetna, istaknuto dugme za skeniranje u sredini, Istorija. */
 @Composable
 fun DonjiMeni(naPocetnoj: Boolean, onPocetna: () -> Unit, onSkeniraj: () -> Unit, onIstorija: () -> Unit) {
-    Surface(color = Boje.Povrsina, shadowElevation = 8.dp) {
+    // Box ne sece sadrzaj, pa okruglo dugme moze da "izviri" iznad trake (Surface bi ga odsekao).
+    Box(Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .shadow(8.dp, clip = false)
+                .background(Boje.Povrsina)
                 .navigationBarsPadding()
                 .height(72.dp)
                 .padding(horizontal = 8.dp),
@@ -315,19 +318,21 @@ fun DonjiMeni(naPocetnoj: Boolean, onPocetna: () -> Unit, onSkeniraj: () -> Unit
             verticalAlignment = Alignment.CenterVertically,
         ) {
             StavkaMenija("Početna", R.drawable.ic_pocetna, izabrana = naPocetnoj, onClick = onPocetna)
-            Surface(
-                onClick = onSkeniraj,
-                shape = CircleShape,
-                color = Boje.Zelena,
-                modifier = Modifier
-                    .offset(y = (-14).dp)
-                    .size(60.dp)
-                    .shadow(8.dp, CircleShape)
-                    .semantics { contentDescription = "Skeniraj bar-kod" },
-            ) {
-                Box(contentAlignment = Alignment.Center) { Ikona(R.drawable.ic_skeniraj, Color.White, velicina = 28.dp) }
-            }
+            Spacer(Modifier.size(60.dp))
             StavkaMenija("Istorija", R.drawable.ic_istorija, izabrana = !naPocetnoj, onClick = onIstorija)
+        }
+        Surface(
+            onClick = onSkeniraj,
+            shape = CircleShape,
+            color = Boje.Zelena,
+            shadowElevation = 6.dp,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-18).dp)
+                .size(60.dp)
+                .semantics { contentDescription = "Skeniraj bar-kod" },
+        ) {
+            Box(contentAlignment = Alignment.Center) { Ikona(R.drawable.ic_skeniraj, Color.White, velicina = 28.dp) }
         }
     }
 }
