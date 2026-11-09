@@ -1,0 +1,4 @@
+# gradlew je skripta za Linux/macOS i mora imati LF kraj reda
+gradlew text eol=lf
+*.bat text eol=crlf
+*.jar binary

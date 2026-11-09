@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Izgled se pravi u Compose-u (ui/theme); ovo je samo pozadina pri pokretanju. -->
+    <style name="Theme.HealthyLife" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/pozadina</item>
+    </style>
+
+    <color name="pozadina">#F8FAFC</color>
+    <color name="zelena">#15803D</color>
+</resources>
